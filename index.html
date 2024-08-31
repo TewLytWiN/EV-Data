@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+        integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+        crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="modern-ev-data-index.css" rel="stylesheet">
+    <title>EV Data</title>
+    <link href="index.css" rel="stylesheet">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Add Three.js and Vanta.js scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
+</head>    
+    <div class="container">
+        <div class="bd-highlight mb-3">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand">NoSQL-based Application</a>
+                    <form id="searchForm" class="d-flex" onsubmit="loadQueryTable(); return false;">
+                        <input class="form-control me-2" id="searchQuery" type="search" placeholder="Enter search term" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
+                
+            </nav>
+        </div>
+        
+        <div class="d-flex bd-highlight mb-3">
+            <div class="col">
+                <div id="piechartTimelyResponse" style="width: 100%; height: 500px; cursor: pointer;"></div>
+            </div>
+            <div class="col">
+                <div id="barchartSubmitted" style="width: 100%; height: 500px; cursor: pointer;"></div>
+            </div>
+        </div>
+    
+        <!-- เพิ่ม modal element นี้ก่อนปิด tag body -->
+        <div id="graphModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modalGraph" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h2>Global EV Sales: 2010-2025</h2>
+            </div>
+            <div class="d-flex flex-column align-items-end">
+                <nav aria-label="Page navigation" class="mb-2">
+                    <ul class="pagination mb-0">
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="goToFirstPage()">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="goToPreviousPage()">Previous</a>
+                        </li>
+                        <span id="paginationNumbers" class="d-flex"></span>
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="goToNextPage()">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" onclick="goToLastPage()">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+                <button type="button" class="btn btn-secondary" onclick="showEVCreateBox()">Create</button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Region</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Parameter</th>
+                        <th scope="col">Mode</th>
+                        <th scope="col">Powertrain</th>
+                        <th scope="col">Year</th>
+                        <th scope="col">Unit</th>
+                        <th scope="col">Value</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="mytable">
+                    <tr>
+                        <th scope="row" colspan="10">Loading...</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="background"></div> <!-- Add this line for Vanta.js background -->
+    
+    <div class="container">
+        <!-- ... (existing content) ... -->
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p>We are dedicated to providing the latest insights and data on electric vehicles, helping to drive the future of sustainable transportation.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="https://www.kaggle.com/datasets/patricklford/global-ev-sales-2010-2024">EV Data</a></li>
+                    <li><a href="https://mail.google.com/mail/u/0/#inbox?compose=new">Reports</a></li>
+                    <li><a href="https://www.facebook.com/keen007x/">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: Mi88899924@gmail.com</p>
+                <p>Phone: (+66) 63-819-3424</p>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/keen007x/"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://github.com/TewLytWiN"><i class="fab fa-github"></i></a>
+                    <a href="https://www.instagram.com/keex_d_forger/"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 EV Data Analytics By Mr.Thanaktit Sricharung. All rights reserved.</p>
+            <p>Proudly Powered By Mr.Bukhoree Sahoh</p>
+        </div>
+    </footer>
+    <script src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script>
+        VANTA.NET({
+          el: "#background",
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.00,
+          minWidth: 200.00,
+          scale: 1.00,
+          scaleMobile: 1.00,
+          color: 0x4551ff,
+          points: 13.00,
+          maxDistance: 23.00
+        })
+        </script>
+    </body>
+
+
+</html>
