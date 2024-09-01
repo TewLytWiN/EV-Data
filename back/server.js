@@ -127,18 +127,20 @@ app.post('/evlist/search', async(req, res) => {
         await client.connect();
 
         const queries = searchTerms.map(term => {
-            const regions = term.split(',').map(r => r.trim());
-            const numericTerm = parseFloat(term);
-
+            const trimmedTerm = term.trim();
+            const numericTerm = parseFloat(trimmedTerm);
+            const regexTerm = new RegExp(trimmedTerm, 'i');
+            
             return {
                 $or: [
-                    { region: { $in: regions } },
-                    { parameter: { $regex: term, $options: 'i' } },
-                    { mode: { $regex: term, $options: 'i' } },
-                    { powertrain: { $regex: term, $options: 'i' } },
-                    { year: { $regex: term, $options: 'i' } },
-                    { unit: { $regex: term, $options: 'i' } },
-                    { value: { $regex: term, $options: 'i' } },
+                    { region: regexTerm },
+                    { category: regexTerm },
+                    { parameter: regexTerm },
+                    { mode: regexTerm },
+                    { powertrain: regexTerm },
+                    { year: regexTerm },
+                    { unit: regexTerm },
+                    { value: regexTerm },
                     ...(
                         !isNaN(numericTerm) 
                         ? [
@@ -151,7 +153,7 @@ app.post('/evlist/search', async(req, res) => {
             };
         });
 
-        const query = { $and: queries };
+        const query = queries.length > 1 ? { $and: queries } : queries[0];
 
         const objects = await client.db('KEEN').collection('EV').find(query).toArray();
         res.status(200).json({ EVData: objects });
