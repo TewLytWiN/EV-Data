@@ -14,14 +14,174 @@
         crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="modern-ev-data-index.css" rel="stylesheet">
-    <title>EV Data Analytics</title>
     <link href="index.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <title>EV Data Analytics</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <!-- Add Three.js and Vanta.js scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
+<script>
+  AOS.init();
+</script>
 
+   <style>
+    .float-contact-button {
+        position: fixed;
+        width: 70px;
+        height: 70px;
+        bottom: 40px;
+        right: 40px;
+        background-color: #4CAF50;
+        color: #FFF;
+        border-radius: 50%;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        border: 2px solid #ffffff;
+    }
+
+    .float-contact-button:hover {
+        background-color: #45a049;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        transform: scale(1.1);
+    }
+
+    .float-contact-button::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        transform: scale(0);
+        transition: all 0.3s ease;
+    }
+
+    .float-contact-button:hover::before {
+        transform: scale(1.2);
+    }
+
+    @media screen and (max-width: 768px) {
+        .float-contact-button {
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            right: 20px;
+            font-size: 24px;
+        }
+    }
+
+    /* Custom styles for SweetAlert */
+    .swal2-popup {
+        font-family: 'Roboto', sans-serif;
+        border-radius: 15px;
+    }
+
+    .swal2-title {
+        color: #4CAF50;
+    }
+
+    .swal2-content {
+        color: #333;
+    }
+
+    .swal2-input, .swal2-textarea {
+        border: 1px solid #4CAF50;
+        border-radius: 5px;
+    }
+
+    .swal2-confirm {
+        background-color: #4CAF50 !important;
+    }
+    .admin-button {
+        position: fixed;
+        bottom: 40px;
+        left: 40px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .admin-button:hover {
+        background-color: #2980b9;
+    }
+
+    @media screen and (max-width: 768px) {
+        .admin-button {
+            bottom: 20px;
+            left: 20px;
+            padding: 8px 16px;
+        }
+    }
+    .admin-button {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 40px;
+        left: 40px;
+        background-color: #3498db;
+        color: #FFF;
+        border-radius: 50%;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        border: 2px solid #ffffff;
+        cursor: pointer;
+    }
+
+    .admin-button:hover {
+        background-color: #2980b9;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        transform: scale(1.1);
+    }
+
+    .admin-button::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        transform: scale(0);
+        transition: all 0.3s ease;
+    }
+
+    .admin-button:hover::before {
+        transform: scale(1.2);
+    }
+
+    @media screen and (max-width: 768px) {
+        .admin-button {
+            width: 50px;
+            height: 50px;
+            bottom: 20px;
+            left: 20px;
+            font-size: 20px;
+        }
+    }
+</style>
+    
 </head>
 
 <body>
@@ -34,16 +194,44 @@
                         <form id="searchForm" class="d-flex me-3" onsubmit="loadQueryTable(); return false;">
                             <input class="form-control me-2" id="searchQuery" type="search" placeholder="Enter search term" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
+
                         </form>
+                    <div>
+                        <button id="voiceSearchButton" class="microphone-btn"><i class="fas fa-microphone"></i></button>
+
+                    </div> 
+                    <div>
+                    </div>
+                    <div>
+                    </div>
+
+                    
                         <div class="user-info">
                             <span id="username-display"></span>
                             <button class="logout-btn" onclick="logout()">Logout</button>
+
                         </div>
+                        <button id="toggleDarkMode" class="btn">
+                            <i id="darkModeIcon" class="fas fa-moon"></i>
+                        </button>
+                        
+                        </button>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                            <span class="slider round"></span>
+                        </label>
                     </div>
                 </div>
+                
             </nav>
         </div>
         
+        <div id="choropleth-map" style="width: 100%; height: 600px;"></div>
+        <div>
+
+        </div>
+        
+         
         <div class="d-flex bd-highlight mb-3">
             <div class="col">
                 <div id="piechartTimelyResponse" style="width: 100%; height: 500px; cursor: pointer;"></div>
@@ -53,7 +241,7 @@
             </div>
         </div>
     
-        <!-- เพิ่ม modal element นี้ก่อนปิด tag body -->
+        <!-- Modal for graph -->
         <div id="graphModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
@@ -62,7 +250,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h2>Global EV Sales: 2010-2024</h2>
+                <h2 class="global-ev-sales">Global EV Sales: 2010-2024</h2>
             </div>
             <div class="d-flex flex-column align-items-end">
                 <nav aria-label="Page navigation" class="mb-2">
@@ -110,11 +298,8 @@
             </table>
         </div>
     </div>
-    <div id="background"></div> <!-- Add this line for Vanta.js background -->
+    <div id="background"></div> <!-- Vanta.js background -->
     
-    <div class="container">
-        <!-- ... (existing content) ... -->
-    </div>
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
@@ -146,6 +331,25 @@
             <p>Proudly Powered By Mr.Bukhoree Sahoh</p>
         </div>
     </footer>
+
+    <!-- Floating Contact Button -->
+    <div class="fixed-buttons">
+        <button class="scroll-to-top" id="scrollToTopButton">
+            <i class="fas fa-chevron-up"></i>
+        </button>
+        <button class="scroll-to-bottom" id="scrollToBottomButton">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        
+        <a href="#" class="float-contact-button" id="contactButton">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <button class="admin-button" id="adminButton">
+            <i class="fas fa-list"></i>
+        </button>
+        <div id="contactList"></div>
+    </div>
+
     <script src="index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
@@ -167,7 +371,7 @@
           maxDistance: 23.00
         })
 
-        // Add this to your existing JavaScript
+        // Username display and logout functionality
         document.addEventListener('DOMContentLoaded', function() {
             const username = localStorage.getItem('username');
             if (username) {
@@ -182,6 +386,212 @@
             window.location.href = 'login.html';
         }
         
+        // Contact button functionality
+        document.getElementById('contactButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'ติดต่อทีมงาน',
+                html: `
+                    <form id="contactForm">
+                        <input id="name" class="swal2-input" placeholder="ชื่อ" required>
+                        <input id="email" class="swal2-input" placeholder="อีเมล" required type="email">
+                        <textarea id="message" class="swal2-textarea" placeholder="ข้อความ" required></textarea>
+                    </form>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'ส่ง',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#4CAF50',
+                cancelButtonColor: '#d33',
+                preConfirm: () => {
+                    const name = Swal.getPopup().querySelector('#name').value;
+                    const email = Swal.getPopup().querySelector('#email').value;
+                    const message = Swal.getPopup().querySelector('#message').value;
+                    if (!name || !email || !message) {
+                        Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+                    }
+                    return { name, email, message };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Store the data
+                    storeContactData(result.value);
+                    Swal.fire({
+                        title: 'ส่งข้อความสำเร็จ',
+                        text: 'ขอบคุณสำหรับการติดต่อ',
+                        icon: 'success',
+                        confirmButtonColor: '#4CAF50'
+                    });
+                }
+            });
+        });
+
+        // Function to store contact data
+// Function to store contact data
+function storeContactData(data) {
+    let contacts = JSON.parse(localStorage.getItem('contacts')) || [];
+    contacts.push({...data, timestamp: new Date().toISOString(), status: 'pending'});
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    console.log('Stored contact:', data);
+}
+
+// Function to retrieve contact data
+function getStoredContacts() {
+    return JSON.parse(localStorage.getItem('contacts')) || [];
+}
+
+// Function to update contact status
+function updateContactStatus(index, newStatus) {
+    let contacts = getStoredContacts();
+    contacts[index].status = newStatus;
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    displayStoredContacts();
+}
+
+// Function to delete contact
+function deleteContact(index) {
+    let contacts = getStoredContacts();
+    contacts.splice(index, 1);
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+    displayStoredContacts();
+}
+
+function displayStoredContacts() {
+    const contacts = getStoredContacts();
+    if (contacts.length === 0) {
+        Swal.fire({
+            title: 'ไม่มีข้อมูล',
+            text: 'ยังไม่มีการติดต่อถูกบันทึกไว้',
+            icon: 'info',
+            confirmButtonColor: '#3498db'
+        });
+        return;
+    }
+
+    let contactsHtml = contacts.map((contact, index) => {
+        let statusColor, statusText;
+        switch(contact.status) {
+            case 'pending':
+                statusColor = 'yellow';
+                statusText = 'กำลังตรวจสอบ';
+                break;
+            case 'completed':
+                statusColor = 'green';
+                statusText = 'ดำเนินการเรียบร้อย';
+                break;
+            case 'rejected':
+                statusColor = 'red';
+                statusText = 'ไม่สามารถดำเนินการได้';
+                break;
+            default:
+                statusColor = 'gray';
+                statusText = 'ไม่ทราบสถานะ';
+        }
+
+        return `
+            <div style="border-bottom: 1px solid #eee; padding: 10px 0;">
+                <strong>ติดต่อที่ ${index + 1}</strong><br>
+                <i class="fas fa-user"></i> ${contact.name}<br>
+                <i class="fas fa-envelope"></i> ${contact.email}<br>
+                <i class="fas fa-comment"></i> ${contact.message}<br>
+                <i class="fas fa-clock"></i> ${new Date(contact.timestamp).toLocaleString()}<br>
+                <span style="color: ${statusColor};">สถานะ: ${statusText}</span><br>
+                <div style="margin-top: 10px;">
+                    <button onclick="updateContactStatus(${index}, 'pending')" class="btn btn-warning btn-sm">กำลังตรวจสอบ</button>
+                    <button onclick="updateContactStatus(${index}, 'completed')" class="btn btn-success btn-sm">ดำเนินการเรียบร้อย</button>
+                    <button onclick="updateContactStatus(${index}, 'rejected')" class="btn btn-danger btn-sm">ไม่สามารถดำเนินการได้</button>
+                    <button onclick="deleteContact(${index})" class="btn btn-secondary btn-sm">ลบ</button>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    Swal.fire({
+        title: 'ข้อมูลการติดต่อ',
+        html: contactsHtml,
+        width: 800,
+        confirmButtonText: 'ปิด',
+        confirmButtonColor: '#3498db',
+        customClass: {
+            container: 'custom-swal-container',
+            popup: 'custom-swal-popup',
+            header: 'custom-swal-header',
+            title: 'custom-swal-title',
+            closeButton: 'custom-swal-close-button',
+            content: 'custom-swal-content',
+            confirmButton: 'custom-swal-confirm-button'
+        }
+    });
+}
+
+// Update the contact button functionality
+document.getElementById('contactButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    Swal.fire({
+        title: 'ติดต่อทีมงาน',
+        html: `
+            <form id="contactForm">
+                <input id="name" class="swal2-input" placeholder="ชื่อ" required>
+                <input id="email" class="swal2-input" placeholder="อีเมล" required type="email">
+                <textarea id="message" class="swal2-textarea" placeholder="ข้อความ" required></textarea>
+            </form>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'ส่ง',
+        cancelButtonText: 'ยกเลิก',
+        confirmButtonColor: '#4CAF50',
+        cancelButtonColor: '#d33',
+        preConfirm: () => {
+            const name = Swal.getPopup().querySelector('#name').value;
+            const email = Swal.getPopup().querySelector('#email').value;
+            const message = Swal.getPopup().querySelector('#message').value;
+            if (!name || !email || !message) {
+                Swal.showValidationMessage('กรุณากรอกข้อมูลให้ครบถ้วน');
+            }
+            return { name, email, message };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            storeContactData(result.value);
+            Swal.fire({
+                title: 'ส่งข้อความสำเร็จ',
+                text: 'ขอบคุณสำหรับการติดต่อ',
+                icon: 'success',
+                confirmButtonColor: '#4CAF50'
+            });
+        }
+    });
+});
+
+// Add event listener to admin button
+document.getElementById('adminButton').addEventListener('click', displayStoredContacts);
+    </script>
+    <script>
+        // ข้อมูลที่ต้องการแสดง
+        const data = [{
+            type: 'choropleth',
+            z: [/* ค่า EV Stock ตามปี */],
+            locations: ['region1', 'region2', /* ชื่อภูมิภาค */],
+            locationmode: 'country names',
+            colorbar: {
+                title: 'EV Stock',
+            },
+            colorscale: 'Plasma',
+            hoverinfo: 'location+z',
+        }];
+
+        const layout = {
+            title: 'EV Stock by Region Over Time',
+            geo: {
+                projection: {
+                    type: 'natural earth',
+                },
+                showframe: false,
+                showcoastlines: false,
+            }
+        };
+
+        Plotly.newPlot('choropleth-map', data, layout);
     </script>
 </body>
 

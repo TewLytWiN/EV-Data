@@ -7,7 +7,7 @@ app.use(cors())
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Hello ITD Dev')
+    res.send('สวัสดีครับ อาจารย์บุ๊ค')
 })
 
 app.listen(port, () => {
