@@ -8,21 +8,27 @@ const itemsPerPage = 20;
 let totalItems = 0;
 let allData = [];
 
-function loadTable() {
-  const xhttp = new XMLHttpRequest();
-  const uri = "http://localhost:3000/evlist";
-  xhttp.open("GET", uri);
-  xhttp.send();
-  xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-          allData = JSON.parse(this.responseText);
-          totalItems = allData.length;
-          displayTable();
-          loadGraph(allData);
-      }
-  };
-}
+// Initial AOS setup
+AOS.init({
+  duration: 1000, // ความเร็วในการแอนิเมชัน (ms)
+  once: true, // เล่นแอนิเมชันครั้งเดียวเมื่อ scroll
+});
 
+// โหลดข้อมูลตารางและกราฟ
+function loadTable() {
+    const xhttp = new XMLHttpRequest();
+    const uri = "http://localhost:3000/evlist";
+    xhttp.open("GET", uri);
+    xhttp.send();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            allData = JSON.parse(this.responseText);
+            totalItems = allData.length;
+            displayTable();
+            loadGraph(allData);
+        }
+    };
+}
 
 // แก้ไขฟังก์ชันการแสดงตาราง
 function displayTable() {
@@ -432,52 +438,48 @@ function openModal(chart, data, title, chartType) {
   var modalGraph = document.getElementById('modalGraph');
   modal.style.display = "block";
   modal.classList.add('fade-in');
-  setTimeout(() => {
-      modal.classList.add('fade-in');
-  }, 10);
-  
+
   var isDarkMode = document.body.classList.contains('dark-mode');
   var textColor = isDarkMode ? '#ffffff' : '#000000';
   var backgroundColor = isDarkMode ? '#333333' : '#ffffff';
 
   var options = {
-      title: title,
-      width: '100%',
-      height: '100%',
-      backgroundColor: { fill: backgroundColor },
-      titleTextStyle: { color: textColor },
-      legend: { textStyle: { color: textColor } },
-      animation: {
-          startup: true,
-          duration: 1000,
-          easing: 'out',
-      },
+    title: title,
+    width: '100%',
+    height: '100%',
+    backgroundColor: { fill: backgroundColor },
+    titleTextStyle: { color: textColor },
+    legend: { textStyle: { color: textColor } },
+    animation: {
+      startup: true,
+      duration: 1000,
+      easing: 'out',
+    },
   };
 
   if (chartType === 'ColumnChart') {
-      options.legend = { position: 'none' };
-      options.vAxis = { textStyle: { color: textColor }, gridlines: { color: isDarkMode ? '#555555' : '#e0e0e0' } };
-      options.hAxis = { textStyle: { color: textColor } };
-      options.chartArea = { backgroundColor: backgroundColor };
+    options.legend = { position: 'none' };
+    options.vAxis = { textStyle: { color: textColor }, gridlines: { color: isDarkMode ? '#555555' : '#e0e0e0' } };
+    options.hAxis = { textStyle: { color: textColor } };
+    options.chartArea = { backgroundColor: backgroundColor };
   } else if (chartType === 'PieChart') {
-      options.pieSliceTextStyle = { color: '#000000' };
-      options.slices = {
-          0: { offset: 0.2 },
-          1: { offset: 0.1 },
-          2: { offset: 0.1 },
-          3: { offset: 0.1 }
-      };
+    options.pieSliceTextStyle = { color: '#000000' };
+    options.slices = {
+      0: { offset: 0.2 },
+      1: { offset: 0.1 },
+      2: { offset: 0.1 },
+      3: { offset: 0.1 }
+    };
   }
 
   var modalChart;
   if (chartType === 'PieChart') {
-      modalChart = new google.visualization.PieChart(modalGraph);
+    modalChart = new google.visualization.PieChart(modalGraph);
   } else {
-      modalChart = new google.visualization.ColumnChart(modalGraph);
+    modalChart = new google.visualization.ColumnChart(modalGraph);
   }
 
   modalChart.draw(google.visualization.arrayToDataTable(data), options);
-
   // ... (โค้ดส่วนอื่นๆ คงเดิม)
 
 
@@ -959,11 +961,11 @@ function plotMap(filteredData) {
           text: filteredData.map(item => item.region),
           hoverinfo: 'location+z',
           colorbar: {
-              title: 'EV Stock',
+              title: 'EV Sales',
           },
       }],
       layout: {
-          title: `EV Stock by Region for ${filteredData[0].year}`,
+          title: `EV Sales by Region for ${filteredData[0].year}`,
           geo: {
               projection: { type: 'natural earth' },
               showframe: false,
@@ -982,6 +984,61 @@ document.addEventListener('DOMContentLoaded', function () {
   const defaultYear = 2024;
   const filteredData = filterDataByYear(defaultYear);
   plotMap(filteredData);
+});
+document.getElementById('darkModeToggle').addEventListener('change', function() {
+  if (this.checked) {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+  }
+  
+  // Redraw charts if they exist
+  if (typeof google !== 'undefined' && google.charts) {
+    if (window.regionChart && window.regionChartData) {
+      drawRegionChart();
+    }
+    if (window.yearChart && window.yearChartData) {
+      drawYearChart();
+    }
+  }
+});
+
+// Check for saved theme preference or respect OS theme setting
+const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+const savedTheme = localStorage.getItem('theme');
+
+if (savedTheme === "dark" || (savedTheme === null && prefersDarkScheme.matches)) {
+  document.body.classList.add("dark-mode");
+  document.getElementById('darkModeToggle').checked = true;
+} else {
+  document.body.classList.remove("dark-mode");
+  document.getElementById('darkModeToggle').checked = false;
+}
+document.addEventListener('scroll', function() {
+  const rows = document.querySelectorAll('.table-row');
+  const windowHeight = window.innerHeight;
+
+  rows.forEach((row, index) => {
+    const rect = row.getBoundingClientRect();
+
+    // ตรวจสอบว่าแถวอยู่ใน viewport หรือไม่
+    if (rect.top < windowHeight && rect.bottom > 0) {
+      // เพิ่ม delay ในการแสดงแถวทีละแถว
+      setTimeout(() => {
+        row.classList.add('visible');
+      }, index * 200); // Delay 200ms ต่อแถว
+    }
+  });
+});
+
+document.getElementById('yourModalId').addEventListener('show', function () {
+  document.body.classList.add('modal-open');
+});
+
+document.getElementById('yourModalId').addEventListener('hide', function () {
+  document.body.classList.remove('modal-open');
 });
 
 window.regionChart = // your region chart instance
