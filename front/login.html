@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
     <style>
         body, html {
             height: 100%;
@@ -101,7 +104,9 @@
 <body>
     <div id="background"></div>
     <div class="login-container">
-        <div class="login-form">
+        <div class="login-form" data-aos="flip-left"
+        data-aos-easing="ease-out-cubic"
+        data-aos-duration="2000">
             <h2>EV Data Analytics</h2>
             <form id="loginForm">
                 <div class="form-group">
@@ -163,5 +168,9 @@
             }
         });z
     </script>
+    <script>
+        AOS.init();
+    </script>
+    
 </body>
 </html>
